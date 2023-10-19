@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iframe1</title>
+    <link rel="stylesheet" href="{% static 'css/iframe1.css' %}">
+</head>
+<body>
+<div>
+    <div class="body-div">
+        <div class="body-top">
+            <input type="button" value="待考试" id="button1" onclick="input_click(1)" style="background-color: #9fcdff;border: solid #7abaff;">
+            <input type="button" value="以考完" id="button2" onclick="input_click(2)">
+        </div>
+        <div class="body-bottom" id="div1">
+            {% for ks_data in ks_datas_n %}
+                <div class="data-show" id="{{ ks_data.id }}" onclick="data_show_id({{ ks_data.id }})">
+                    <img src="{{ ks_data.img }}" alt="">
+                    <h3 style="font-size: 18px">{{ ks_data.a }}</h3>
+                <p style="color: red;">未完成</p>
+                </div>
+            {% empty %}
+                <p>考试已全部完成，暂无考试</p>
+            {% endfor %}
+        </div>
+        <div class="body-bottom" id="div2" style="display: none">
+            {% for ks_data in ks_datas_y %}
+                <div class="data-show" id="{{ ks_data.0.id }}">
+                    <img src="{{ ks_data.0.img }}" alt="">
+                    <h3 style="font-size: 18px">{{ ks_data.0.a }}</h3>
+                    <p style="color: #007bff;float: left;">已完成</p>
+                    <p style="float: right;margin-right: 20px">得分：<span style="color: red">{{ ks_data.1 }}</span></p>
+                </div>
+            {% empty %}
+                <p style="margin-left: 20px">当前无考完试的，请参加考试</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function input_click(id){
+        const input1 = document.getElementById('button1')
+        const input2 = document.getElementById("button2")
+        const div1 = document.getElementById("div1")
+        const div2 = document.getElementById("div2")
+        if(id===1){
+            input1.style = "background-color: #9fcdff;border: solid #7abaff;"
+            input2.style = "background-color: f3f3f3; border: none;"
+            div2.style = "display: none"
+            div1.style = "displat: block"
+        }
+        else if(id===2){
+            input2.style = "background-color: #9fcdff;border: solid #7abaff;"
+            input1.style = "background-color: f3f3f3; border: none;"
+            div1.style = "display: none"
+            div2.style = "displat: block"
+        }
+    }
+    function data_show_id(id){
+        window.parent.location.href = "kaoshi/id=" + id
+    }
+</script>
+</html>

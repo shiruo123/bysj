@@ -1,0 +1,108 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{#    <link rel="stylesheet" href="{% static 'css/login_css.css' %}">#}
+    <title>考试登入</title>
+</head>
+<style>
+    .main{
+        width: 1272px;
+        height: 700px;
+        margin: 0 auto;
+    }
+    .main img{
+        width: 1272px;
+        height: 700px;
+        {#background-image: url("{% static 'images/login.png' %}");#}
+        position: absolute;
+    }
+    .login{
+        width: 40%;
+        height: 260px;
+        padding: 30px;
+        margin: auto auto;
+        {#border: 2px solid rgba(0, 123, 255, 0.3);#}
+    }
+    .login .login_form{
+        width: 500px;
+        height: 200px;
+    }
+    .login .login_form .login_input{
+        width: 100%;
+        height: 50px;
+        margin-bottom: 20px;
+    }
+    .ipt{
+        width: 100%;
+        height: 100%;
+        background: #f5f6f7;
+        border: 2px solid rgba(0, 123, 255, 0.5);
+    }
+    .sbt{
+        width: 100%;
+        height: 50px;
+        cursor: default;
+        color: #fff;
+        background-color: #7abaff;
+        border-radius: 20px 20px;
+    }
+    .sbt:hover{
+        background-color: #007bff;
+    }
+    .login_a_pag{
+        color: #95999c;
+    }
+    .login_a_pag:hover{
+        color: #007bff;
+    }
+</style>
+
+<body>
+<div class="main">
+    <img src="{% static 'images/login.png' %}" alt="">
+    <div class="login" style="position: relative;top:270px">
+        <div class="login_form">
+            <form action="{% url "login_is" %}" method="post">
+                {% csrf_token %}
+                <div class="login_input">
+                    <label for="account">{# <label for="account"></label>#}</label><input type="text" id="account" name="account" placeholder="用户名" minlength="1" maxlength="6" class="ipt">
+                </div>
+                <div class="login_input">
+                    <label for="pwd">{# <label for="pwd"></label>#}</label><input type="password" id="pwd" name="pwd" placeholder="密码" minlength="6" maxlength="16" class="ipt" style="float: left">
+                </div>
+                <input type="submit" value="确定" class="sbt" onclick="checkPassword()">
+            </form>
+        </div>
+        <div class="login_a">
+            <a href="../login/pwd_update_html" style="float: left;" class="login_a_pag">忘记密码？</a>
+            <a href="../login/new_account_html" style="float: right;" class="login_a_pag">注册账号</a>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    let i = 1;
+    function checkPassword() {
+        var passwordInput = document.getElementById("pwd");
+        var accountInput = document.getElementById("account")
+        var password = passwordInput.value;
+        var account = accountInput.value;
+
+        if (password.length < 6 || account.length < 1) {
+            passwordInput.setCustomValidity("密码错误，请重新输入");
+        } else {
+            passwordInput.setCustomValidity("");
+        }
+    }
+</script>
+<script src="{% static 'js/bootstrap/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<script></script>
+</html>

@@ -1,0 +1,71 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main_css.css' %}">
+    <link rel="stylesheet" href="{% static 'css/kaoshi.css' %}">
+    <title>考试</title>
+</head>
+<body>
+<div class="main_nav">
+    <div class="nav-left float-left">
+        <h3>预防电信网络诈骗在线考试系统</h3>
+    </div>
+    <div class="nav-right float-right">
+        <img src="{% static 'images/用户.jpg' %}" alt="">
+        <h3>{{ user }}</h3>
+        <div class="nav-right-hover">
+            <ul class="hover-ul">
+                <li><a href="#" style="color: #ffffff">账号管理</a></li>
+                <li><a href="../login/login_out" style="color: #ffffff">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div style="margin: 0 auto;width: 340px">
+    <p style="float: left;margin-right: 100px">考试时间：10分钟</p><p style="margin-left: 100px">考生：{{ user }}</p>
+</div>
+
+<div id="time" class="time"></div>
+
+<div class="kaoshi-div">
+{#<p>{{ ti.d }}</p>#}
+    <form action="{% url 'chengji' kaoshi_id ti.d %}" method="post" id="kaoshi_from">
+    {% csrf_token %}
+        {% for t in ti.tx %}
+            <p>{{ t.0 }}</p>
+            {% for x in t.1 %}
+                <div>
+                    <input type="radio" name="{{ forloop.parentloop.counter }}" id="{{ forloop.parentloop.counter }}" value="{{ x.0 }}">
+                    <label for="{{ forloop.parentloop.counter }}">{{ x }}</label>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <input type="submit" value="提交" class="input-submit">
+    </form>
+</div>
+
+<script>
+    const time_page = document.getElementById("time")
+    const form = document.getElementById('kaoshi_from')
+    let t = 600
+    setInterval(sleep, 1000)
+    function sleep(){
+        t -= 1
+        time_page.innerText = String(parseInt(String(t/60))) + "分" + String(t%60) + "秒"
+        if (t === 0){
+            console.log('no')
+            form.submit()
+        }
+    }
+</script>
+
+</body>
+<script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/bootstrap/jquery.min.js' %}"></script>
+</html>
