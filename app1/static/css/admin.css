@@ -35,6 +35,7 @@
     margin: 0 auto;
     height: 520px;
     overflow: auto;
+    float: left;
 }
 .body-table{
     width: 980px;
@@ -50,13 +51,32 @@
     overflow: auto;
     border-bottom: 1px solid #000000;
 }
-.body-table table{
+table{
     width: 980px;
     text-align: center;
+}
+.body-float{
+    width: 1150px;
+    height: 540px;
+    margin-left: 50px;
+    margin-top: 40px;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    overflow: auto;
+}
+.body-float table{
+    width: 1150px;
     table-layout: fixed;
 }
-.table3{
-    white-space:nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+.body-float table td{
+    overflow: auto;
+    border-bottom: 1px solid #000000;
+}
+.body-right-table4 table{
+    table-layout: fixed;
+}
+.body-right-table4 table td{
+    overflow: auto;
+    border-bottom: 1px solid #000000;
 }

@@ -12,7 +12,7 @@ def save(table, data):
         print("失败")
 
 
-db = pymysql.connect(host="119.29.244.36", user="youthrefuel", password="dsq171007", port=3306, database="bysj")
+db = pymysql.connect(host="localhost", user="root", password="dsq171007", port=3306, database="bysj")
 cursor = db.cursor()
 
 url = "http://cooco.net.cn/zuowen/516098.html"

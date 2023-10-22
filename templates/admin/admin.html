@@ -11,14 +11,15 @@
 </head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <body>
-<div class="admin" style="margin: 0 auto">
+<div class="admin" style="margin: 0 auto;float: left">
     <div class="admin-top">预防电信网络诈骗在线考试后台</div>
     <div class="admin-left">
         <button style="background-color: #7abaff" id="b1" onclick="b_click(1)">科目管理</button>
         <button id="b2" onclick="b_click(2)">用户管理</button>
-        <button id="b3" onclick="b_click(3)">题库管理</button>
-{#        <button>在线考试</button>#}
-{#        <button>自动阅卷</button>#}
+        <button id="b3" onclick="b_click(3)">考题管理</button>
+        <button id="b4" onclick="b_click(4)">题库管理</button>
+        <button id="b7" onclick="b_click(7)">评论管理</button>
+        <button><a href="../" style="width: 200px">返回主页</a></button>
     </div>
     <div class="admin-right">
         <div class="admin-right-body">
@@ -34,7 +35,7 @@
                             <td nowrap="nowrap">删除</td>
                         </tr>
                         {% for sh in kemu %}
-                            <tr>
+                            <tr id="1{{ sh.id }}_tr">
                             <td nowrap="nowrap">{{ forloop.counter }}</td>
                             <td nowrap="nowrap" class="{{ forloop.counter }}_table1_t">{{ sh.a }}</td>
                             <td nowrap="nowrap" class="{{ forloop.counter }}_table1_t">{{ sh.other }}</td>
@@ -56,7 +57,7 @@
                             <td nowrap="nowrap">删除</td>
                         </tr>
                         {% for us in user %}
-                            <tr>
+                            <tr id="2{{ us.id }}_tr">
                             <td nowrap="nowrap">{{ forloop.counter }}</td>
                             <td nowrap="nowrap" class="{{ forloop.counter }}_table2_t">{{ us.user }}</td>
                             <td nowrap="nowrap" class="{{ forloop.counter }}_table2_t">{{ us.password }}</td>
@@ -71,9 +72,25 @@
                     <input type="button" style="width: 200px;height: 50px;margin-left: 390px" value="增加" onclick="create_data(this, 'table2')">
                 </div>
                 <div id="table3" style="display: none">
-                    <table class="table3" id="{{ tiku|length|add:1 }}5">
+                    <table class="table3">
                         <tr>
                             <td nowrap="nowrap">序号</td>
+                            <td nowrap="nowrap">标题</td>
+                            <td nowrap="nowrap">题库管理</td>
+                        </tr>
+                        {% for km in kemu %}
+                            <tr id="3{{ km.id }}_tr">
+                            <td nowrap="nowrap">{{ forloop.counter }}</td>
+                            <td nowrap="nowrap">{{ km.a }}</td>
+                            <td nowrap="nowrap"><input type="button" id="{{ forloop.counter }}_table3_upd" onclick="tiku_guanli(this, [3, '{{ km.id }}'])" value="管理"></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div id="table4" class="body-right-table4" style="display: none">
+                    <table class="table6" id="{{ tiku|length|add:1 }}6">
+                        <tr>
+                            <td nowrap="nowrap">ID</td>
                             <td nowrap="nowrap">题目</td>
                             <td nowrap="nowrap">A</td>
                             <td nowrap="nowrap">B</td>
@@ -84,24 +101,114 @@
                             <td nowrap="nowrap">删除</td>
                         </tr>
                         {% for tk in tiku %}
-                            <tr>
-                            <td nowrap="nowrap">{{ tk.id }}</td>
-                            <td nowrap="nowrap">{{ tk.t }}</td>
-                            <td nowrap="nowrap">{{ tk.a }}</td>
-                            <td nowrap="nowrap">{{ tk.b }}</td>
-                            <td nowrap="nowrap">{{ tk.c }}</td>
-                            <td nowrap="nowrap">{{ tk.d }}</td>
-                            <td nowrap="nowrap">{{ tk.daan }}</td>
-                            <td nowrap="nowrap"><input type="button" id="{{ forloop.counter }}_table3_upd" onclick="update_data(this, [3, '{{ tk.id }}'])" value="修改"></td>
-                            <td nowrap="nowrap"><input type="button" onclick="delete_data(3, '{{ tk.id }}')" value="删除"></td>
+                            <tr id="6{{ tk.id }}_tr">
+                            <td nowrap="nowrap">{{ forloop.counter }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.t }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.a }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.b }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.c }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.d }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table6_t">{{ tk.daan }}</td>
+                            <td nowrap="nowrap"><input type="button" id="{{ forloop.counter }}_table6_upd" onclick="update_data(this, [4, '{{ tk.id }}'])" value="修改"></td>
+                            <td nowrap="nowrap"><input type="button" onclick="delete_data(6, '{{ tk.id }}')" value="删除"></td>
                             </tr>
                         {% endfor %}
                     </table>
-                    <input type="button" style="width: 200px;height: 50px;margin-left: 390px" value="增加">
+                    <input type="button" style="width: 200px;height: 50px;margin-left: 390px" value="增加" onclick="create_data(this, 'table6')">
+                </div>
+                <div id="table7" style="display: none">
+                    <table class="table7" id="{{ lts|length|add:1 }}3" >
+                        <tr>
+                            <td nowrap="nowrap">ID</td>
+                            <td nowrap="nowrap">用户</td>
+                            <td nowrap="nowrap">标题</td>
+                            <td nowrap="nowrap">文本</td>
+                            <td nowrap="nowrap">时间</td>
+                            <td nowrap="nowrap">修改</td>
+                            <td nowrap="nowrap">删除</td>
+                        </tr>
+                        {% for lt in lts %}
+                            <tr id="7{{ lt.id }}_tr">
+                            <td nowrap="nowrap">{{ forloop.counter }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table7_t">{{ lt.key_UserAccount.user }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table7_t">{{ lt.title }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table7_t">{{ lt.text }}</td>
+                            <td nowrap="nowrap" class="{{ forloop.counter }}_table7_t">{{ lt.date }}</td>
+                            <td nowrap="nowrap"><input id="{{ forloop.counter }}_table7_udt" type="button" onclick="update_data(this, [7, '{{lt.id }}'])" value="修改"></td>
+                            <td nowrap="nowrap"><input type="button" onclick="delete_data(7, '{{ lt.id }}')" value="删除"></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <input type="button" style="width: 200px;height: 50px;margin-left: 390px" value="增加" onclick="create_data(this, 'table7')">
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div class="body-float" style="display: none" id="body-float">
+    {% for tg in tgs %}
+        <div class="{{ tg.0.key_KaoShi_b.id }}_tiku" style="display: none">
+            <p style="color: red;font-size: 24px;margin:0;text-align: center">{{ tg.0.key_KaoShi_b.a }}</p>
+            <table class="table4-{{ forloop.counter }}" id="{{ tg|length|add:1 }}6">
+                <tr>
+                    <td nowrap="nowrap">ID</td>
+                    <td nowrap="nowrap">题目</td>
+                    <td nowrap="nowrap">A</td>
+                    <td nowrap="nowrap">B</td>
+                    <td nowrap="nowrap">C</td>
+                    <td nowrap="nowrap">D</td>
+                    <td nowrap="nowrap">答案</td>
+{#                    <td nowrap="nowrap">修改</td>#}
+                    <td nowrap="nowrap">删除</td>
+                </tr>
+                {% for ti in tg %}
+                    <tr id="4{{ ti.id }}_tr">
+                    <td nowrap="nowrap">{{ forloop.counter }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.t }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.a }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.b }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.c }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.d }}</td>
+                    <td nowrap="nowrap" class="{{ forloop.counter }}_table4_t">{{ ti.key_TiKu_a.daan }}</td>
+{#                    <td nowrap="nowrap"><input type="button" id="{{ forloop.counter }}_table4_upd" onclick="update_data(this, [4, '{{ ti.key_TiKu_a.id }}'])" value="修改"></td>#}
+                    <td nowrap="nowrap"><input type="button" onclick="delete_data(4, '{{ ti.id }}')" value="删除"></td>
+                    </tr>
+                    {% if forloop.last %}
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <input type="button" style="width: 200px;height: 50px;margin-left: 360px;float: left" value="增加" onclick="tiku_create('{{ tg.0.key_KaoShi_b.id }}')">
+            <input type="button" style="width: 200px;height: 50px;margin-left: 20px;float: left" value="返回" onclick="fanhui('{{ tg.0.key_KaoShi_b.id }}_tiku')">
+        </div>
+    {% endfor %}
+    <div class="table5" style="display: none">
+        <table class="table5">
+            <input type="button" style="width: 200px;height: 50px;margin-left: 470px;float: left" value="返回" onclick="fanhui('table5')">
+            <tr>
+                <td nowrap="nowrap">序号</td>
+                <td nowrap="nowrap">题目</td>
+                <td nowrap="nowrap">A</td>
+                <td nowrap="nowrap">B</td>
+                <td nowrap="nowrap">C</td>
+                <td nowrap="nowrap">D</td>
+                <td nowrap="nowrap">答案</td>
+                <td nowrap="nowrap">增加</td>
+            </tr>
+            {% for tk in tiku %}
+                <tr>
+                    <td nowrap="nowrap">{{ tk.id }}</td>
+                    <td nowrap="nowrap">{{ tk.t }}</td>
+                    <td nowrap="nowrap">{{ tk.a }}</td>
+                    <td nowrap="nowrap">{{ tk.b }}</td>
+                    <td nowrap="nowrap">{{ tk.c }}</td>
+                    <td nowrap="nowrap">{{ tk.d }}</td>
+                    <td nowrap="nowrap">{{ tk.daan }}</td>
+                    <td nowrap="nowrap"><input type="button" onclick="tiku_create_data('{{ tk.id }}')" value="增加"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
 </div>
 </body>
 </html>
@@ -110,10 +217,11 @@
 <script>
     let update_is = false
     function b_click(id){
-        for (let i = 1; i < 4; i++) {
-            const b = document.getElementById("b"+String(i))
-            const t = document.getElementById("table"+i)
-            if (id===i){
+        const l = [1, 2, 3, 4, 7]
+        for (let i = 0; i < l.length; i++) {
+            const b = document.getElementById("b"+String(l[i]))
+            const t = document.getElementById("table"+l[i])
+            if (id===l[i]){
                 b.style = 'background-color: #7abaff'
                 t.style = 'display: block'
             }
@@ -135,18 +243,27 @@
             traditional:true, {#传数组必备#}
             data: data,
             success: function (res) {
-                console.log(res)
                 alert('删除成功')
-                location.reload()
+                const tr = document.getElementById(String(b_id)+b_b_id+"_tr")
+                tr.style = 'display:none;'
             }
         })
     }
     function update_data(obj, list){
+        let id_0 = ""
+        let id_7 = ""
+        if (isNaN(obj.id[1])===false) {
+            id_0 = obj.id[0] + obj.id[1]
+            id_7 = obj.id[8]
+        }else {
+            id_0 = obj.id[0]
+            id_7 = obj.id[7]
+        }
         if (obj.value ==="修改"){
             if (update_is){
                 alert("请先完成上一次的修改")
             }else{
-                let ts = document.getElementsByClassName(obj.id[0]+"_table"+obj.id[7]+"_t")
+                let ts = document.getElementsByClassName(id_0+"_table"+id_7+"_t")
                 console.log(ts)
                 for (let i = 0; i < ts.length; i++) {
                     console.log(ts[i].innerHTML)
@@ -158,7 +275,7 @@
             }
         }
         else if (obj.value === "确定"){
-            let ts = document.getElementsByClassName(obj.id[0]+"_table"+obj.id[7]+"_t")
+            let ts = document.getElementsByClassName(id_0+"_table"+id_7+"_t")
             let ts_list = []
             for (let i = 0; i < ts.length; i++) {
                 console.log(ts[i].innerHTML)
@@ -186,15 +303,24 @@
     }
     function create_data(obj, classname){
         let tr = ""
+        let id_0 = ""
+        let id_1 = ""
         const table = document.getElementsByClassName(classname)[0]
+        if (table.id.length === 3) {
+            id_0 = table.id[0]+table.id[1]
+            id_1 = table.id[2]
+        }else {
+            id_0 = table.id[0]
+            id_1 = table.id[1]
+        }
         if (obj.value === "增加"){
-            for (let i = 0; i < parseInt(table.id[1]); i++) {
-                tr += "<td nowrap='nowrap' contentEditable='True' class='"+table.id[0]+"_table"+classname[5]+"_t"+"' style='background-color: #ffffff'></td>"
+            for (let i = 0; i < parseInt(id_1); i++) {
+                tr += "<td nowrap='nowrap' contentEditable='True' class='"+id_0+"_table"+classname[5]+"_t"+"' style='background-color: #ffffff'></td>"
             }
-            table.innerHTML += "<tr><td nowrap='nowrap'>"+table.id[0]+tr+"</td></tr>";
+            table.innerHTML += "<tr><td nowrap='nowrap'>"+id_0+tr+"</td></tr>";
             obj.value = "确定"
         }else{
-            let ts = document.getElementsByClassName(table.id[0]+"_table"+classname[5]+"_t")
+            let ts = document.getElementsByClassName(id_0+"_table"+classname[5]+"_t")
             let ts_list = []
             for (let i = 0; i < ts.length; i++) {
                 if (ts[i].innerHTML === ""){
@@ -213,11 +339,49 @@
                 },
                 success: function (res) {
                     obj.value = "增加"
-                    table.id = String(parseInt(table.id[0])+1) + table.id[1]
+                    table.id = String(parseInt(id_0)+1) + id_1
                     alert("添加成功！")
                     location.reload()
                 }
             })
         }
+    }
+    function tiku_guanli(obj, tiku){
+        const b = document.getElementById('body-float')
+        const t = document.getElementsByClassName(tiku[1]+'_tiku')[0]
+        b.style = 'display:block'
+        t.style = 'display:block'
+    }
+    function fanhui(tiku_id){
+        const b = document.getElementById('body-float')
+        const t = document.getElementsByClassName(tiku_id)[0]
+        b.style = 'display:none'
+        t.style = 'display:none'
+    }
+    function tiku_create(kaoshi_id){
+        const b = document.getElementById('body-float')
+        const t = document.getElementsByClassName(kaoshi_id+"_tiku")[0]
+        const table5 = document.getElementsByClassName('table5')[0]
+        b.style = 'display: block;'
+        table5.id = kaoshi_id+"table5"
+        table5.style = 'display:block;'
+        t.style = 'display:none'
+    }
+    function tiku_create_data(tiku_id){
+        const t = document.getElementsByClassName('table5')[0]
+        const datas = [tiku_id, t.id[0]]
+        $.ajax({
+            url:'admin/create_data',
+            type:'get',
+            traditional:true, {#传数组必备#}
+            data: {
+                'b_id': "5",
+                "datas": datas
+            },
+            success: function (res) {
+                    alert("添加成功！")
+                    location.reload()
+                }
+        })
     }
 </script>

@@ -32,6 +32,8 @@ urlpatterns = [
     path("login/new_account", views.new_account, name="new_account"),
     path("login/login_out", views.login_out, name="login_out"),
     path("iframe1", views.iframe1, name="iframe1"),
+    path("iframe2", views.iframe2, name="iframe2"),
+    path("iframe2/add_data", views.iframe2_add_data, name="iframe2_add_data"),
     path("kaoshi/id=<kaoshi_id>", views.kaoshi, name="kaoshi"),
-    path("chengji/id=<kaoshi_id>/daan=<daans>", views.chengji, name="chengji"),
+    path("chengji/id=<kaoshi_id>", views.chengji, name="chengji"),
 ]

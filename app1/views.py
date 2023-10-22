@@ -1,3 +1,5 @@
+import time
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from app1.models import *
@@ -9,26 +11,40 @@ from app1.kaoshi_t import KaoShiClass
 
 
 def admin(request):
-    kemu = KaoShi.objects.all()
-    user = UserAccount.objects.all()
-    tiku = TiKu_xzt.objects.all()
-    return render(request, 'admin/admin.html', context={
-        'kemu': kemu,
-        'user': user,
-        'tiku': tiku,
-    })
+    if request.session['user'] == "admin":
+        tikuguanlis = []
+        kemus = KaoShi.objects.all()
+        users = UserAccount.objects.all()
+        tikus = TiKu_xzt.objects.all()
+        lts = LunTan.objects.filter().all()
+        for kemu in kemus:
+            tikuguanli = TiKuGuanLi.objects.filter(key_KaoShi_b_id=kemu.id)
+            tikuguanlis.append(tikuguanli)
+        return render(request, 'admin/admin.html', context={
+            'kemu': kemus,
+            'user': users,
+            'tiku': tikus,
+            'tgs': tikuguanlis,
+            'lts': lts,
+        })
+    else:
+        return redirect('main')
 
 
 def delete_data(request):
     data = request.GET
 
     if request.GET.get('b_id') == "1":
-        kemu = KaoShi.objects.filter(id=int(data.get('b_b_id')))
+        d = KaoShi.objects.filter(id=int(data.get('b_b_id')))
     elif request.GET.get('b_id') == "2":
-        kemu = UserAccount.objects.filter(id=int(data.get('b_b_id')))
-    elif request.GET.get('b_id') == '3':
-        kemu = TiKu_xzt.objects.filter(id=int(data.get('b_b_id')))
-    kemu.delete()
+        d = UserAccount.objects.filter(id=int(data.get('b_b_id')))
+    elif request.GET.get('b_id') == '4':
+        d = TiKuGuanLi.objects.filter(id=int(data.get('b_b_id')))
+    elif request.GET.get('b_id') == '6':
+        d = TiKu_xzt.objects.filter(id=int(data.get('b_b_id')))
+    elif request.GET.get('b_id') == '7':
+        d = LunTan.objects.filter(id=int(data.get('b_b_id')))
+    d.delete()
     return HttpResponse("删除")
 
 
@@ -40,8 +56,13 @@ def update_data(request):
         KaoShi.objects.filter(id=int(data.get('b_b_id'))).update(a=datas[0], other=datas[1], img=datas[2])
     elif data.get('b_id') == '2':
         UserAccount.objects.filter(id=int(data.get('b_b_id'))).update(user=datas[0], password=datas[1])
-    elif data.get('b_id') == '3':
+    elif data.get('b_id') == '4':
         TiKu_xzt.objects.filter(id=int(data.get('b_b_id'))).update(t=datas[0], a=datas[1], b=datas[2], c=datas[3], d=datas[4],daan=datas[5])
+    elif data.get('b_id') == '7':
+        datas[-1] = datas[-1].replace("年", "-")
+        datas[-1] = datas[-1].replace("月", "-")
+        datas[-1] = datas[-1].replace("日", "")
+        LunTan.objects.filter(id=int(data.get('b_b_id'))).update(title=datas[1], text=datas[2], date=datas[3])
     return HttpResponse("修改")
 
 
@@ -56,13 +77,22 @@ def create_data(request):
         }
         k = KaoShi(**datas)
         k.save()
+        kaoshi = KaoShiClass()
+        ti = kaoshi.get_ti()
+        kaoshi.set_KaoShi_db(k.id, ti)
     elif data.get('b_id') == "2":
         datas = {
             'user': datas[0],
             'password': datas[1],
         }
         k = UserAccount(**datas)
-    elif data.get('b_id') == "3":
+    elif data.get('b_id') == "5":
+        datas = {
+            'key_KaoShi_b_id': int(datas[1]),
+            'key_TiKu_a_id': int(datas[0]),
+        }
+        k = TiKuGuanLi(**datas)
+    elif data.get('b_id') == '6':
         datas = {
             't': datas[0],
             'a': datas[1],
@@ -72,6 +102,14 @@ def create_data(request):
             'daan': datas[5],
         }
         k = TiKu_xzt(**datas)
+    elif data.get('b_id') == '7':
+        datas[0] = UserAccount.objects.get(user=datas[0]).id
+        datas = {
+            'key_UserAccount_id': datas[0],
+            'title': datas[1],
+            'text': datas[2],
+        }
+        k = LunTan(**datas)
     k.save()
     return HttpResponse(k.id)
 
@@ -176,50 +214,61 @@ def iframe1(request):
     })
 
 
+def iframe2(request):
+    luntan = LunTan.objects.filter().all()
+    return render(request, 'iframe2.html', context={
+        "lts": luntan
+    })
+
+
+def iframe2_add_data(request):
+    if request.method == "POST":
+        title = request.POST.get("title_input")
+        text = request.POST.get("text_input")
+        user_id = UserAccount.objects.get(user=request.session["user"]).id
+        lt = LunTan(title=title, text=text, key_UserAccount_id=user_id)
+        lt.save()
+        return HttpResponse("<script>alert('评论成功！');window.location.href='../iframe2'</script>")
+    else:
+        return redirect('main')
+
+
 def kaoshi(request, kaoshi_id):
-    text_dict = {
-        "tx": [],
-        "d": [],
-    }
+    ti_s = []
     if request.session['is_login']:
-        kaoshi_ = KaoShiClass()
-        kaoshi_.input(int(kaoshi_id))
-        texts = kaoshi_.text()
-        # 将元组转化为列表方便修改数据
-        for j, t in enumerate(texts):
-            texts = list(texts)
-            texts[j] = list(t)
-        # 设置序号 如题1.***
-        for i in range(1, 11):
-            texts[i - 1][1] = str(i) + "." + texts[i - 1][1]
-            texts[i - 1].pop(0)
-        # 将题、选项、答案进行分类
-        for text in texts:
-            xs_list = []
-            text_dict.get("d").append(text[-1])
-            for xs in text[1:-1]:
-                xs_list.append(xs)
-            text_dict.get("tx").append([text[0], xs_list])
+        tiku = TiKuGuanLi.objects.filter(key_KaoShi_b_id=int(kaoshi_id))
+        for t in tiku.all():
+            ti = [t.key_TiKu_a.a, t.key_TiKu_a.b]
+            if t.key_TiKu_a.c:
+                ti.append(t.key_TiKu_a.c)
+                if t.key_TiKu_a.d:
+                    ti.append(t.key_TiKu_a.d)
+            ti_s.append([t.key_TiKu_a.t, ti])
         return render(request, 'kaoshi.html', context={
             "kaoshi_id": kaoshi_id,
-            "ti": text_dict,
+            "ti": ti_s,
             "user": request.session["user"],
         })
     else:
         return render(request, 'login/login.html')
 
 
-def chengji(request, kaoshi_id, daans):
+def chengji(request, kaoshi_id):
     if request.method == "POST":
-        daans = eval(daans)
+        daans = TiKuGuanLi.objects.filter(key_KaoShi_b_id=kaoshi_id).values_list('key_TiKu_a__daan')
         sum = 0
+        print("运行到此")
+        fenzhi = int(100/len(daans))
         kaoshi = KaoShi.objects.get(id=kaoshi_id)
         user = UserAccount.objects.get(user=request.session["user"])
-        for i in range(1, 11):
+        for i in range(1, int(len(daans))+1):
+            # 获取input的答案
             daan = request.POST.get(str(i))
-            print(daan, daans[i - 1], type(daan), type(daans[i - 1]))
-            if daan == daans[i - 1]:
-                sum += 10
+            print(daan, daans[i - 1][0], type(daan), type(daans[i - 1][0]))
+            if daan == daans[i - 1][0]:
+                sum += fenzhi
+        print(sum)
+        print(fenzhi)
         cj = ChengJi(keu_KaoShi_b_id=kaoshi_id, key_user_a_id=user.id, fenshu=sum)
         cj.save()
         return HttpResponse(f"<script>alert('{kaoshi.a}，得分：{sum}，任务完成');window.location.href=''</script>")

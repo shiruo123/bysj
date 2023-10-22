@@ -35,11 +35,11 @@
 
 <div class="kaoshi-div">
 {#<p>{{ ti.d }}</p>#}
-    <form action="{% url 'chengji' kaoshi_id ti.d %}" method="post" id="kaoshi_from">
+    <form action="{% url 'chengji' kaoshi_id %}" method="post" id="kaoshi_from">
     {% csrf_token %}
-        {% for t in ti.tx %}
-            <p>{{ t.0 }}</p>
-            {% for x in t.1 %}
+        {% for t, xx in ti %}
+            <p>{{ forloop.counter }}.{{ t }}</p>
+            {% for x in xx %}
                 <div>
                     <input type="radio" name="{{ forloop.parentloop.counter }}" id="{{ forloop.parentloop.counter }}" value="{{ x.0 }}">
                     <label for="{{ forloop.parentloop.counter }}">{{ x }}</label>

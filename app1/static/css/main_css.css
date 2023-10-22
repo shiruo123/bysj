@@ -43,7 +43,7 @@ h3{
     background-image: url("../images/nav.png");
     background-position: right;
     width: 150px;
-    height: 80px;
+    /*height: 50px;*/
     right: 10px;
     display: none;
     position: absolute;
@@ -59,7 +59,7 @@ li{
 }
 .hover-ul{
     width: 150px;
-    height: 80px;
+    /*height: 80px;*/
     padding: 0;
 }
 .hover-ul li{
