@@ -1,0 +1,23 @@
+.iframe2-body-top{
+    text-align: center;
+    border-bottom: 1px solid #000000;
+}
+.iframe2-body-top input{
+    width: 700px;
+    margin-right: 200px;
+    margin-top: 10px;
+}
+.iframe2-body-top textarea{
+    width: 700px;
+    height: 100px;
+    margin-top: 10px;
+    margin-right: 200px;
+}
+.iframe2-body-bottom{
+    /*text-align: center;*/
+    margin: 0 0 0 4%;
+}
+.luntan{
+    width: 700px;
+    height: 100px;
+}
