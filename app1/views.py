@@ -17,6 +17,7 @@ def admin(request):
         users = UserAccount.objects.all()
         tikus = TiKu_xzt.objects.all()
         lts = LunTan.objects.filter().all()
+        chengji = ChengJi.objects.filter()
         for kemu in kemus:
             tikuguanli = TiKuGuanLi.objects.filter(key_KaoShi_b_id=kemu.id)
             tikuguanlis.append(tikuguanli)
@@ -26,6 +27,7 @@ def admin(request):
             'tiku': tikus,
             'tgs': tikuguanlis,
             'lts': lts,
+            'cjs': chengji,
         })
     else:
         return redirect('main')
@@ -44,6 +46,8 @@ def delete_data(request):
         d = TiKu_xzt.objects.filter(id=int(data.get('b_b_id')))
     elif request.GET.get('b_id') == '7':
         d = LunTan.objects.filter(id=int(data.get('b_b_id')))
+    elif request.GET.get('b_id') == '8':
+        d = ChengJi.objects.filter(id=int(data.get('b_b_id')))
     d.delete()
     return HttpResponse("删除")
 
@@ -51,7 +55,6 @@ def delete_data(request):
 def update_data(request):
     data = request.GET
     datas = data.getlist('datas')
-    print(datas)
     if data.get('b_id') == "1":
         KaoShi.objects.filter(id=int(data.get('b_b_id'))).update(a=datas[0], other=datas[1], img=datas[2])
     elif data.get('b_id') == '2':
@@ -63,6 +66,10 @@ def update_data(request):
         datas[-1] = datas[-1].replace("月", "-")
         datas[-1] = datas[-1].replace("日", "")
         LunTan.objects.filter(id=int(data.get('b_b_id'))).update(title=datas[1], text=datas[2], date=datas[3])
+    elif data.get('b_id') == "8":
+        print(datas)
+        user_id = UserAccount.objects.get(user=datas[0])
+        ChengJi.objects.filter(id=int(data.get('b_b_id'))).update(key_user_a_id=user_id.id, keu_KaoShi_b_id=int(datas[1]), fenshu=datas[2])
     return HttpResponse("修改")
 
 
@@ -110,6 +117,14 @@ def create_data(request):
             'text': datas[2],
         }
         k = LunTan(**datas)
+    elif data.get('b_id') == '8':
+        user_id = UserAccount.objects.get(user=datas[0])
+        datas = {
+            'key_user_a_id': user_id.id,
+            'keu_KaoShi_b_id': datas[1],
+            'fenshu': datas[2],
+        }
+        k = ChengJi(**datas)
     k.save()
     return HttpResponse(k.id)
 
