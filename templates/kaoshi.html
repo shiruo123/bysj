@@ -38,13 +38,15 @@
     <form action="{% url 'chengji' kaoshi_id %}" method="post" id="kaoshi_from">
     {% csrf_token %}
         {% for t, xx in ti %}
-            <p>{{ forloop.counter }}.{{ t }}</p>
-            {% for x in xx %}
-                <div>
-                    <input type="radio" name="{{ forloop.parentloop.counter }}" id="{{ forloop.parentloop.counter }}" value="{{ x.0 }}">
-                    <label for="{{ forloop.parentloop.counter }}">{{ x }}</label>
-                </div>
-            {% endfor %}
+            <div style="background-color: #ffffff;margin:10px">
+                <p>{{ forloop.counter }}.{{ t }}</p>
+                {% for x in xx %}
+                    <div>
+                        <input type="radio" name="{{ forloop.parentloop.counter }}" id="{{ forloop.parentloop.counter }}" value="{{ x.0 }}">
+                        <label for="{{ forloop.parentloop.counter }}">{{ x }}</label>
+                    </div>
+                {% endfor %}
+            </div>
         {% endfor %}
         <input type="submit" value="提交" class="input-submit">
     </form>
